@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+    id 'application'
+    //id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+repositories {
+    jcenter()
+    maven { url 'https://jitpack.io' }
+}
+group = "net.benjaminurquhart.utcserver"
+mainClassName = "net.benjaminurquhart.utcserver.Main"
+
+
+sourceSets {
+    main.java.srcDirs = ['src']
+    main.resources.srcDirs = ['src/resources']
+}
+
+dependencies {
+	implementation "com.google.guava:guava:33.4.0-jre"
+}
+
+sourceCompatibility = '1.21'
+targetCompatibility = '1.21'
