@@ -1,60 +1,21 @@
-name: Build and Release EXE
-
 on:
   workflow_dispatch:
-    tags:
-      - 'v1.0'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up JDK
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '21'
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'  # adjust if needed
 
-    - name: Build fat JAR
-      run: ./gradlew shadowJar
+      - name: Install Gradle
+        uses: gradle/gradle-build-action@v2
 
-    - name: Install Launch4j
-      run: |
-        sudo apt-get install -y launch4j
-        mkdir launch4j-config
-        echo '<?xml version="1.0" encoding="UTF-8"?>
-        <launch4jConfig>
-          <dontWrapJar>false</dontWrapJar>
-          <headerType>console</headerType>
-          <jar>build/libs/Standalone-1.0.jar</jar>
-          <outfile>Standalone.exe</outfile>
-          <errTitle>UTC Server</errTitle>
-          <classPath>
-            <mainClass>net.benjaminurquhart.utcserver.Main</mainClass>
-          </classPath>
-          <jre>
-            <minVersion>1.8.0</minVersion>
-            <maxVersion></maxVersion>
-          </jre>
-        </launch4jConfig>' > launch4j-config/config.xml
-        launch4j launch4j-config/config.xml
-
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: v1.0
-        name: Standalone
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Upload EXE
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./Standalone.exe
-        asset_name: Standalone.exe
-        asset_content_type: application/vnd.microsoft.portable-executable
+      - name: Build JAR
+        run: gradle shadowJar
