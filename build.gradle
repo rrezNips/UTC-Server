@@ -1,11 +1,17 @@
 plugins {
     id 'java'
     id 'application'
-    //id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
-repositories {
-    jcenter()
-    maven { url 'https://jitpack.io' }
+
+application {
+    mainClassName = "net.benjaminurquhart.utcserver.Main"
+}
+
+shadowJar {
+    archiveBaseName.set('Standalone')
+    archiveVersion.set('1.0')
+    archiveClassifier.set('')
 }
 group = "net.benjaminurquhart.utcserver"
 mainClassName = "net.benjaminurquhart.utcserver.Main"
