@@ -1,7 +1,24 @@
 #!/usr/bin/env bash
 set -e
 
+echo "Fixing Yarn GPG key (if needed)..."
+
+# Ensure keyrings directory exists
+sudo mkdir -p /etc/apt/keyrings
+
+# Install Yarn GPG key
+curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | \
+  gpg --dearmor | sudo tee /etc/apt/keyrings/yarn.gpg > /dev/null
+
+sudo chmod 644 /etc/apt/keyrings/yarn.gpg
+
+# Ensure correct Yarn repo entry
+echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian stable main" | \
+  sudo tee /etc/apt/sources.list.d/yarn.list > /dev/null
+
+echo "Running apt update..."
 sudo apt update
+
 sudo apt install -y \
   xvfb \
   x11vnc \
